@@ -1,11 +1,13 @@
 const express = require('express');
 const bodyParser = require('body-parser');
+const jwt = require('jsonwebtoken');
 const helmet = require('helmet');
 const config = require('./config');
 const verify = require('./verify');
 const request = require('./request');
 
 const app = express();
+app.set('secret', config.secret);
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(bodyParser.json());
 app.use(helmet());
@@ -14,9 +16,9 @@ const router = express.Router();
 app.use('/api', router);
 
 /**
- * ログイン処理
+ * 認証処理
  */
-app.post('/login', function(req, res) {
+router.post('/auth', function(req, res) {
     (async () => {
         // core/auth に問い合わせ
         const data = await request({
@@ -25,7 +27,13 @@ app.post('/login', function(req, res) {
             headers: {'content-type': 'application/json'},
             body: JSON.stringify(req.body)
         });
-        res.json(JSON.parse(data));
+        const json = JSON.parse(data);
+        if (json.result) {
+            const token = jwt.sign({twitterId: json.twitterId}, app.get('secret'), {expiresIn: 86400});
+            res.json({result: true, token: token});
+        } else {
+            res.json(json);
+        }
     })().catch((err) => {
         res.json({result: false, error: "Error!"});
         console.log(err);
@@ -51,11 +59,44 @@ router.get('/user', verify, function(req, res) {
 });
 
 /**
- * ログアウト処理
+ * 履歴検索処理
  */
-app.get( '/logout', function( req, res ){
-    req.session.token = null;
-    res.json({result: true});
+router.get('/history', verify, function(req, res) {
+    (async () => {
+        let url = `${config.coreUrl}history?twitterId=${req.decoded.twitterId}`;
+        url += !req.query.offset? '': `&offset=${req.query.offset}`;
+        url += !req.query.limit? '': `&limit=${req.query.limit}`;
+
+        // core/history に問い合わせ
+        const data = await request({
+            method: 'GET',
+            url: url,
+            headers: {'content-type': 'application/json'}
+        });
+        res.json(JSON.parse(data));
+    })().catch((err) => {
+        res.json({result: false, error: "Error!"});
+        console.log(err);
+    });
+});
+
+/**
+ * 出金処理
+ */
+router.put('/withdraw', function(req, res) {
+    (async () => {
+        // core/withdraw に問い合わせ
+        const data = await request({
+            method: 'PUT',
+            url: `${config.coreUrl}withdraw`,
+            headers: {'content-type': 'application/json'},
+            body: JSON.stringify(req.body)
+        });
+        res.json(JSON.parse(data));
+    })().catch((err) => {
+        res.json({result: false, error: "Error!"});
+        console.log(err);
+    });
 });
 
 app.listen(config.listenPort);
