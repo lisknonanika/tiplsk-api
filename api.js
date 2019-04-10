@@ -83,12 +83,38 @@ router.get('/history', verify, function(req, res) {
 /**
  * 出金処理
  */
-router.put('/withdraw', function(req, res) {
+router.put('/withdraw', verify, function(req, res) {
     (async () => {
+        let url = `${config.coreUrl}withdraw?senderId=${req.decoded.twitterId}`;
+        url += !req.body.liskAddress? '': `&liskAddress=${req.body.liskAddress}`;
+        url += !req.body.amount? '': `&amount=${req.body.amount}`;
+
         // core/withdraw に問い合わせ
         const data = await request({
             method: 'PUT',
-            url: `${config.coreUrl}withdraw`,
+            url: url,
+            headers: {'content-type': 'application/json'},
+            body: JSON.stringify(req.body)
+        });
+        res.json(JSON.parse(data));
+    })().catch((err) => {
+        res.json({result: false, error: "Error!"});
+        console.log(err);
+    });
+});
+
+/**
+ * パスワード変更処理
+ */
+router.put('/password', verify, function(req, res) {
+    (async () => {
+        let url = `${config.coreUrl}password?twitterId=${req.decoded.twitterId}`;
+        url += !req.body.pw? '': `&pw=${req.body.pw}`;
+
+        // core/password に問い合わせ
+        const data = await request({
+            method: 'PUT',
+            url: url,
             headers: {'content-type': 'application/json'},
             body: JSON.stringify(req.body)
         });
