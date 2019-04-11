@@ -41,7 +41,7 @@ router.post('/auth', function(req, res) {
 });
 
 /**
- * ユーザー取得処理
+ * ユーザー検索処理
  */
 router.get('/user', verify, function(req, res) {
     (async () => {
