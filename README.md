@@ -1,7 +1,4 @@
-# tiplsk-api
-tiplsk - Public API
-
-## HowTo
+## 使い方
 
 ### 認証する
 **POST:** /api/auth
