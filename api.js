@@ -25,11 +25,11 @@ router.post('/auth', function(req, res) {
             method: 'POST',
             url: `${config.coreUrl}auth`,
             headers: {'content-type': 'application/json'},
-            body: JSON.stringify(req.body)
+            body: JSON.stringify(req.body),
+            json: true
         });
-        const json = JSON.parse(data);
-        if (json.result) {
-            const token = jwt.sign({twitterId: json.twitterId}, app.get('secret'), {expiresIn: 86400});
+        if (data.result) {
+            const token = jwt.sign({twitterId: data.twitterId}, app.get('secret'), {expiresIn: 86400});
             res.json({result: true, token: token});
         } else {
             res.json(json);
@@ -49,9 +49,9 @@ router.get('/user', verify, function(req, res) {
         const data = await request({
             method: 'GET',
             url: `${config.coreUrl}user?twitterId=${req.decoded.twitterId}`,
-            headers: {'content-type': 'application/json'}
+            json: true
         });
-        res.json(JSON.parse(data));
+        res.json(data);
     })().catch((err) => {
         res.json({result: false, error: "Error!"});
         console.log(err);
@@ -71,9 +71,9 @@ router.get('/history', verify, function(req, res) {
         const data = await request({
             method: 'GET',
             url: url,
-            headers: {'content-type': 'application/json'}
+            json: true
         });
-        res.json(JSON.parse(data));
+        res.json(data);
     })().catch((err) => {
         res.json({result: false, error: "Error!"});
         console.log(err);
@@ -94,9 +94,10 @@ router.put('/withdraw', verify, function(req, res) {
             method: 'PUT',
             url: url,
             headers: {'content-type': 'application/json'},
-            body: JSON.stringify(req.body)
+            body: JSON.stringify(req.body),
+            json: true
         });
-        res.json(JSON.parse(data));
+        res.json(data);
     })().catch((err) => {
         res.json({result: false, error: "Error!"});
         console.log(err);
@@ -116,9 +117,10 @@ router.put('/password', verify, function(req, res) {
             method: 'PUT',
             url: url,
             headers: {'content-type': 'application/json'},
-            body: JSON.stringify(req.body)
+            body: JSON.stringify(req.body),
+            json: true
         });
-        res.json(JSON.parse(data));
+        res.json(data);
     })().catch((err) => {
         res.json({result: false, error: "Error!"});
         console.log(err);
