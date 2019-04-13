@@ -25,7 +25,7 @@ router.post('/auth', function(req, res) {
             method: 'POST',
             url: `${config.coreUrl}auth`,
             headers: {'content-type': 'application/json'},
-            body: JSON.stringify(req.body),
+            body: req.body,
             json: true
         });
         if (data.result) {
@@ -94,7 +94,7 @@ router.put('/withdraw', verify, function(req, res) {
             method: 'PUT',
             url: url,
             headers: {'content-type': 'application/json'},
-            body: JSON.stringify(req.body),
+            body: req.body,
             json: true
         });
         res.json(data);
@@ -117,7 +117,7 @@ router.put('/password', verify, function(req, res) {
             method: 'PUT',
             url: url,
             headers: {'content-type': 'application/json'},
-            body: JSON.stringify(req.body),
+            body: req.body,
             json: true
         });
         res.json(data);
