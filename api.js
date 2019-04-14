@@ -18,7 +18,7 @@ app.use('/api', router);
 /**
  * 認証処理
  */
-router.post('/auth', function(req, res) {
+router.post('/auth', (req, res) => {
     (async () => {
         // core/auth に問い合わせ
         const data = await request({
@@ -43,7 +43,7 @@ router.post('/auth', function(req, res) {
 /**
  * ユーザー検索処理
  */
-router.get('/user', verify, function(req, res) {
+router.get('/user', verify, (req, res) => {
     (async () => {
         // core/user に問い合わせ
         const data = await request({
@@ -61,7 +61,7 @@ router.get('/user', verify, function(req, res) {
 /**
  * 履歴検索処理
  */
-router.get('/history', verify, function(req, res) {
+router.get('/history', verify, (req, res) => {
     (async () => {
         let url = `${config.coreUrl}history?twitterId=${req.decoded.twitterId}`;
         url += !req.query.offset? '': `&offset=${req.query.offset}`;
@@ -83,7 +83,7 @@ router.get('/history', verify, function(req, res) {
 /**
  * 出金処理
  */
-router.put('/withdraw', verify, function(req, res) {
+router.put('/withdraw', verify, (req, res) => {
     (async () => {
         let url = `${config.coreUrl}withdraw?senderId=${req.decoded.twitterId}`;
         url += !req.body.liskAddress? '': `&liskAddress=${req.body.liskAddress}`;
@@ -107,7 +107,7 @@ router.put('/withdraw', verify, function(req, res) {
 /**
  * パスワード変更処理
  */
-router.put('/password', verify, function(req, res) {
+router.put('/password', verify, (req, res) => {
     (async () => {
         let url = `${config.coreUrl}password?twitterId=${req.decoded.twitterId}`;
         url += !req.body.pw? '': `&pw=${req.body.pw}`;

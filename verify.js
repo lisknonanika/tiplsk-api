@@ -5,7 +5,7 @@ module.exports = (req, res, next) => {
     const token = (req.session && req.session.token) || req.headers['x-access-token'];
     if (!token) return res.status(403).send({error: 'Invalid Token'});
 
-    jwt.verify(token, config.secret, function(error, decoded) {
+    jwt.verify(token, config.secret, (error, decoded) => {
         if (error) return res.status(403).send({error: 'Invalid Token'});
         req.decoded = decoded;
         next();
