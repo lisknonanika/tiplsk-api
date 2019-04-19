@@ -32,7 +32,7 @@ router.post('/auth', (req, res) => {
             const token = jwt.sign({twitterId: data.twitterId}, app.get('secret'), {expiresIn: 86400});
             res.json({result: true, token: token});
         } else {
-            res.json(json);
+            res.json(data);
         }
     })().catch((err) => {
         res.json({result: false, error: "Error!"});
