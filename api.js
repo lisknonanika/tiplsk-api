@@ -85,16 +85,16 @@ router.get('/history', verify, (req, res) => {
  */
 router.put('/withdraw', verify, (req, res) => {
     (async () => {
-        let url = `${config.coreUrl}withdraw?senderId=${req.decoded.twitterId}`;
-        url += !req.body.liskAddress? '': `&liskAddress=${req.body.liskAddress}`;
-        url += !req.body.amount? '': `&amount=${req.body.amount}`;
-
+        let params = {senderId: req.decoded.twitterId};
+        params.liskAddress= !req.body.liskAddress? '': req.body.liskAddress;
+        params.amount= !req.body.amount? '': req.body.amount;
+        
         // core/withdraw に問い合わせ
         const data = await request({
             method: 'PUT',
-            url: url,
+            url: `${config.coreUrl}withdraw`,
             headers: {'content-type': 'application/json'},
-            body: req.body,
+            body: params,
             json: true
         });
         res.json(data);
@@ -109,15 +109,15 @@ router.put('/withdraw', verify, (req, res) => {
  */
 router.put('/password', verify, (req, res) => {
     (async () => {
-        let url = `${config.coreUrl}password?twitterId=${req.decoded.twitterId}`;
-        url += !req.body.pw? '': `&pw=${req.body.pw}`;
+        let params = {twitterId: req.decoded.twitterId};
+        params.pw= !req.body.pw? '': req.body.pw;
 
         // core/password に問い合わせ
         const data = await request({
             method: 'PUT',
-            url: url,
+            url: `${config.coreUrl}password`,
             headers: {'content-type': 'application/json'},
-            body: req.body,
+            body: params,
             json: true
         });
         res.json(data);
