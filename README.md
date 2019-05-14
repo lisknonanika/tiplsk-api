@@ -31,18 +31,6 @@
 
 <br>
 
-### 認証したユーザーから対象リスクアドレスに送金する
-**PUT:** /api/withdraw
-- Required Params
-  - liskAddress：送金先
-  - amount：送金額
-- Return
-  - 送金結果
-
-※HTTP Session or HTTP Header:x-access-tokenにaccess-tokenの設定が必要
-
-<br>
-
 ### 認証したユーザーのパスワードを変更する
 **PUT:** /api/password
 - Required Params
