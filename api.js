@@ -81,30 +81,6 @@ router.get('/history', verify, (req, res) => {
 });
 
 /**
- * 出金処理
- */
-router.put('/withdraw', verify, (req, res) => {
-    (async () => {
-        let params = {senderId: req.decoded.twitterId};
-        params.liskAddress= !req.body.liskAddress? '': req.body.liskAddress;
-        params.amount= !req.body.amount? '': req.body.amount;
-        
-        // core/withdraw に問い合わせ
-        const data = await request({
-            method: 'PUT',
-            url: `${config.coreUrl}withdraw`,
-            headers: {'content-type': 'application/json'},
-            body: params,
-            json: true
-        });
-        res.json(data);
-    })().catch((err) => {
-        res.json({result: false, error: "Error!"});
-        console.log(err);
-    });
-});
-
-/**
  * パスワード変更処理
  */
 router.put('/password', verify, (req, res) => {
